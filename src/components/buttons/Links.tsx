@@ -7,7 +7,7 @@ interface Myprops {
 const Links : react.FC<Myprops> = ({children,href,...rest}) => {
   return (
     <Link href={href} passHref legacyBehavior>
-        <a href={href} {...rest} className="text-center p hover:text-cyan-400">{children}</a>
+        <a href={href} {...rest} className="text-center h4 hover:text-cyan-400">{children}</a>
     </Link>
   )
 }

@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ['latin'] })
 export default function Home() {
   return (
    <Layout>
-     <div className='min-h-screen space-y-4 overflow-hidden'>
+     <div className='space-y-4 overflow-hidden min-h-main'>
           <div className='flex items-center justify-center px-10 mt-10 overflow-hidden md:mt-20 h-1/2'>
             <Image className='transition duration-500 ease-in-out contrast-50 w-96 md:w-full hover:scale-105 hover:contrast-100' width={1920} height={700} src={home} alt='home' />
           </div>
