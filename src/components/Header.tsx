@@ -1,18 +1,26 @@
 import * as react from 'react'
 import Links from './buttons/Links';
 import ThemeButton from './buttons/ThemeButton';
-import { FaAlignJustify, FaRegTimesCircle } from 'react-icons/fa';
+import { FaAlignJustify, FaRegTimesCircle, FaUserCircle } from 'react-icons/fa';
+import Image from 'next/image';
 
 export const Header = () => {
     const [open, setOpen] = react.useState(false)
     return (
-        <nav className='sticky top-0 bg-white dark:bg-dark shadow-sm z-20 text-[12px] md:text-[20px] flex flex-col justify-center md:justify-between pt-2 md:pt-8 px-8 overflow-x-hidden'>
+        <nav className='sticky top-0 bg-white dark:bg-dark shadow-sm z-20 flex flex-col justify-center md:justify-between pt-2 md:pt-8 px-8 overflow-x-hidden'>
             <div className='flex'>
+                <Image
+                    height="1080"
+                    width="1920"
+                    className="hidden md:block md:absolute top-4 w-14 md:w-40"
+                    src="/images/logo.jpg"
+                    alt="Logo"
+                />
                 <h1 className='block text-xl font-extrabold md:hidden'>Silhouette</h1>
                 <button className='block ml-auto md:hidden ' onClick={() => setOpen(!open)}>
-                {
+                    {
                         open ? <FaRegTimesCircle className='' size={30} /> : <FaAlignJustify size={30} />
-                }
+                    }
                 </button>
             </div>
             <div className='flex items-center justify-center md:justify-end'>
@@ -23,10 +31,13 @@ export const Header = () => {
                         </li>
                     ))}
                     <li>
-                    <ThemeButton />
+                        <ThemeButton />
+                    </li>
+                    <li className='flex justify-center items-center flex-col'>
+                    <><FaUserCircle size={20} /> <Links href='/auth'>Login</Links></>
                     </li>
                 </ul>
-                
+
             </div>
 
         </nav>

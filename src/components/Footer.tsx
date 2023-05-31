@@ -3,7 +3,7 @@ import { FaInstagram } from 'react-icons/fa'
 
 export const Footer = () => {
     return (
-        <div className='flex flex-col justify-between w-full px-8 py-4 overflow-hidden text-lg md:w-screen md:flex-row md:text-title'>
+        <div className='flex flex-col justify-between px-8 py-4 overflow-hidden text-lg md:flex-row md:text-title'>
         <div className="flex items-center justify-center">
         <h1 className="text-sm text-center md:text-lg">&copy;2022 Silhouette Studio</h1>
         </div>

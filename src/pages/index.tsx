@@ -4,9 +4,17 @@ import { Layout } from '@/components/Layout'
 import ImageHome from '@/components/ImageHome'
 import home from "../components/image/home.webp"
 import Image from 'next/image'
+import withAuth from '@/components/hoc/withAuth'
+import useAuthStore from '@/store/useAuthStore'
 const inter = Inter({ subsets: ['latin'] })
-
-export default function Home() {
+export default withAuth(Home, 'optional');
+function Home() {
+  const user = useAuthStore.useUser();
+  const isAuthenticated = useAuthStore.useIsAuthenticated();
+  console.log(user);
+  console.log(isAuthenticated);
+  
+  
   return (
    <Layout>
      <div className='space-y-4 overflow-hidden min-h-main'>

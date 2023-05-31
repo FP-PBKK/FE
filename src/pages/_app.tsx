@@ -6,7 +6,6 @@ import { useRouter } from 'next/router'
 import NProgress from 'nprogress'
 import '@/styles/nprogress.css'
 
-
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter()
   react.useEffect(() => {
