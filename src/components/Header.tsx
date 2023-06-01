@@ -3,9 +3,23 @@ import Links from './buttons/Links';
 import ThemeButton from './buttons/ThemeButton';
 import { FaAlignJustify, FaRegTimesCircle, FaUserCircle } from 'react-icons/fa';
 import Image from 'next/image';
+import useAuthStore from '@/store/useAuthStore';
+import { toast } from 'react-hot-toast';
+import { DEFAULT_TOAST_MESSAGE } from '@/constant/toast';
 
 export const Header = () => {
     const [open, setOpen] = react.useState(false)
+    const user = useAuthStore.useUser();
+    const logout = useAuthStore.useLogout();
+    const handleLogout= ()=>{
+        try {
+            logout()
+            toast.success("Logout Success")
+        } catch (error:any) {
+            toast.error(error)
+        }
+    }
+
     return (
         <nav className='sticky top-0 bg-white dark:bg-dark shadow-sm z-20 flex flex-col justify-center md:justify-between pt-2 md:pt-8 px-8 overflow-x-hidden'>
             <div className='flex'>
@@ -34,7 +48,10 @@ export const Header = () => {
                         <ThemeButton />
                     </li>
                     <li className='flex justify-center items-center flex-col'>
-                    <><FaUserCircle size={20} /> <Links href='/auth'>Login</Links></>
+                    {
+                        user ? <><span>{user.username}</span> <button onClick={handleLogout}>Logout</button></> :  <><FaUserCircle size={20} /> <Links href='/auth'>Login</Links></>
+                    }
+                   
                     </li>
                 </ul>
 

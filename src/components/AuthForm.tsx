@@ -22,7 +22,7 @@ const AuthForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const login = useAuthStore.useLogin();
 
- 
+
 
   const toggleVariant = useCallback(() => {
     if (variant === 'LOGIN') {
@@ -40,87 +40,109 @@ const AuthForm = () => {
     }
   } = useForm<FieldValues>({
     defaultValues: {
+      role_id: "RL0002",
       name: '',
       email: '',
-      password: ''
+      password: '',
+      phone_number: ''
     }
   });
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    setIsLoading(true);
     let tempToken: string;
-  
+
     if (variant === 'REGISTER') {
-      
+      toast.promise(
+        apiMock.post(``, data)
+          .then((res) => {
+            setVariant("LOGIN")
+          }),
+        {
+          ...DEFAULT_TOAST_MESSAGE,
+          success: 'Account Successfully Created',
+        }
+      );
+
     }
 
     if (variant === 'LOGIN') {
       toast.promise(
-        apiMock.post(`/login`, data)
+        apiMock.post(`/user/login`, data)
           .then((res) => {
+            setIsLoading(false)
             const { token } = res.data.data;
             tempToken = token;
             localStorage.setItem('token', token);
-  
-            return apiMock.get<ApiReturn<User>>('/whoami');
+
+            return apiMock.get<ApiReturn<User>>('/user/whoami');
           })
           .then((user) => {
-            
             login({
               ...user.data.data,
               token: tempToken,
             });
+            setIsLoading(false)
+          }).then(()=>{
+            router.push("/")
           }),
         {
           ...DEFAULT_TOAST_MESSAGE,
           success: 'Successfully logged in',
         }
       );
-      setIsLoading(false)
-      router.push("./")
-      
     }
   }
 
 
 
-  return ( 
-    
+  return (
+
     <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-      <Toaster/>
-      <div 
+      <Toaster />
+      <div
         className="px-4 py-8 bg-white shadow sm:rounded-lg sm:px-10"
       >
-        <form 
-          className="space-y-6" 
+        <form
+          className="space-y-6"
           onSubmit={handleSubmit(onSubmit)}
         >
           {variant === 'REGISTER' && (
-            <Input
-              disabled={isLoading}
-              register={register}
-              errors={errors}
-              required
-              id="name" 
-              label="Name"
-            />
+            <>
+              <Input
+                disabled={isLoading}
+                register={register}
+                errors={errors}
+                required
+                id="name"
+                label="Name"
+              />
+              <Input
+                disabled={isLoading}
+                register={register}
+                errors={errors}
+                required
+                id="phone_number"
+                label="Nomor Hp"
+                type="number"
+              />
+            </>
           )}
-          <Input 
+          <Input
             disabled={isLoading}
             register={register}
             errors={errors}
             required
-            id="email" 
-            label="Email address" 
+            id="email"
+            label="Email address"
             type="email"
           />
-          <Input 
+          <Input
             disabled={isLoading}
             register={register}
             errors={errors}
             required
-            id="password" 
-            label="Password" 
+            id="password"
+            label="Password"
             type="password"
           />
           <div>
@@ -132,24 +154,24 @@ const AuthForm = () => {
 
         <div className="mt-6">
           <div className="relative">
-            <div 
+            <div
               className="absolute inset-0 flex items-center "
             >
               <div className="w-full border-t border-gray-300" />
             </div>
             <div className="relative flex justify-center text-sm">
-             
+
             </div>
           </div>
         </div>
-        <div 
+        <div
           className="flex justify-center gap-2 px-2 mt-6 text-sm text-gray-500 "
         >
           <div>
-            {variant === 'LOGIN' ? 'New to Pose Palace?' : 'Already have an account?'} 
+            {variant === 'LOGIN' ? 'New to Pose Palace?' : 'Already have an account?'}
           </div>
-          <div 
-            onClick={toggleVariant} 
+          <div
+            onClick={toggleVariant}
             className="underline cursor-pointer"
           >
             {variant === 'LOGIN' ? 'Create an account' : 'Login'}
@@ -159,5 +181,5 @@ const AuthForm = () => {
     </div>
   );
 }
- 
+
 export default AuthForm;
