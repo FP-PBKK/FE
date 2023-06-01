@@ -1,4 +1,7 @@
+'use client';
+
 import { Layout } from '@/components/Layout'
+import apiMock from '@/lib/axios-mock';
 import * as react from 'react'
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
@@ -7,10 +10,24 @@ const index = () => {
 
   type Value = ValuePiece | [ValuePiece, ValuePiece];
   const [value, onChange] = react.useState<Value>(new Date());
-  console.log(value);
+  const today = new Date()
 
   const [paket, setPaket] = react.useState("")
 
+
+  const getJam = async () => {
+    try {
+      const response = await apiMock.get('/booking/schedules')
+      console.log(response.data.data);
+      
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  react.useEffect(()=>{
+    getJam()
+  })
   return (
     <Layout>
     <div className='flex items-center justify-center min-h-screen'>

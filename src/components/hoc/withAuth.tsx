@@ -67,7 +67,7 @@ export default function withAuth<T extends WithAuthProps = WithAuthProps>(
       }
       const loadUser = async () => {
         try {
-          const res = await apiMock.get<ApiReturn<User>>('/whoami');
+          const res = await apiMock.get<ApiReturn<User>>('/user/whoami');
 
           login({
             ...res.data.data,
