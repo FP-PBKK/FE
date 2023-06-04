@@ -1,6 +1,6 @@
 import { createSelectorHooks } from 'auto-zustand-selectors-hook';
 
-import create from 'zustand';
+import {create} from 'zustand';
 import { User } from '@/types/auth';
 import { produce } from 'immer';
 

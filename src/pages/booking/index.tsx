@@ -1,19 +1,36 @@
 'use client';
 
 import { Layout } from '@/components/Layout'
+import withAuth from '@/components/hoc/withAuth';
 import apiMock from '@/lib/axios-mock';
+import useBookStore from '@/store/useBookStore';
+import { useRouter } from 'next/router';
 import * as react from 'react'
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-const index = () => {
+export default withAuth(index, 'optional');
+function index () {
   type ValuePiece = Date | null;
 
   type Value = ValuePiece | [ValuePiece, ValuePiece];
   const [value, onChange] = react.useState<Value>(new Date());
-  const today = new Date()
+  const router = useRouter();
 
   const [paket, setPaket] = react.useState("")
+  const login = useBookStore.useSetData();
 
+  const handleSubmit = (e:any) => {
+    e.preventDefault()
+    let data : string ="sasa"
+    let temp ={
+      id : +new Date(),
+      name:"ddaa",
+      tanggal : value?.toLocaleString(),
+      jam : "2020"
+    }
+    login(temp)
+    router.push('/booking/next')
+  }
 
   const getJam = async () => {
     try {
@@ -31,7 +48,7 @@ const index = () => {
   return (
     <Layout>
     <div className='flex items-center justify-center min-h-screen'>
-      <form className="flex justify-center w-full -mt-20 md:mt-0">
+      <form className="flex justify-center w-full -mt-20 md:mt-0" onSubmit={handleSubmit}>
         <div className="w-full md:w-[80%] md:h-[70%]">
           <div className="flex flex-col items-center justify-center space-x-3 md:flex-row">
             <div className="w-[60%] space-y-1 text-center">
@@ -71,4 +88,3 @@ const index = () => {
     </Layout>
   )
 }
-export default index

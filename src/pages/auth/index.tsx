@@ -1,7 +1,8 @@
 import AuthForm from "@/components/AuthForm";
+import withAuth from "@/components/hoc/withAuth";
 import Image from "next/image";
-
-const index = () => {
+// export default withAuth(index,"auth")
+export default function index () {
   return (
     <div 
       className="flex flex-col justify-center h-screen py-12 bg-gray-100 sm:px-6 lg:px-8"
@@ -25,5 +26,3 @@ const index = () => {
 
   )
 }
-
-export default index;

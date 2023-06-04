@@ -53,7 +53,7 @@ const AuthForm = () => {
 
     if (variant === 'REGISTER') {
       toast.promise(
-        apiMock.post(``, data)
+        apiMock.post(`/user`, data)
           .then((res) => {
             setVariant("LOGIN")
           }),
@@ -72,6 +72,7 @@ const AuthForm = () => {
             setIsLoading(false)
             const { token } = res.data.data;
             tempToken = token;
+            
             localStorage.setItem('token', token);
 
             return apiMock.get<ApiReturn<User>>('/user/whoami');
@@ -82,8 +83,10 @@ const AuthForm = () => {
               token: tempToken,
             });
             setIsLoading(false)
-          }).then(()=>{
-            router.push("/")
+            return user.data.data
+          }).then((user)=>{
+            if(user.role === 'User') return router.push("/")
+            return router.push('/admin')
           }),
         {
           ...DEFAULT_TOAST_MESSAGE,

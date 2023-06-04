@@ -1,49 +1,44 @@
 import { createSelectorHooks } from 'auto-zustand-selectors-hook';
 
-import create from 'zustand';
-import { User } from '@/types/auth';
+import {create} from 'zustand';
 import { produce } from 'immer';
+import { Booking } from '@/types/book';
 
 type AuthStoreType = {
-  user: User | null;
+  data: Booking | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (user: User) => void;
-  logout: () => void;
-  stopLoading: () => void;
+  setData: (data:Booking) => void;
+  getData: () => void;
 };
 
-const useAuthStoreBase = create<AuthStoreType>((set) => ({
-  user: null,
+const useBooktoreBase = create<AuthStoreType>((set) => ({
+  data: null,
   isAuthenticated: false,
   isLoading: true,
-  login: (user) => {
-    localStorage.setItem('token', user.token);
+  setData: (data) => {
+    localStorage.setItem("booking",JSON.stringify(data))
     set(
       produce<AuthStoreType>((state) => {
         state.isAuthenticated = true;
-        state.user = user;
+        state.data = data;
       })
     );
   },
-  logout: () => {
-    localStorage.removeItem('token');
-    set(
-      produce<AuthStoreType>((state) => {
-        state.isAuthenticated = false;
-        state.user = null;
-      })
-    );
-  },
-  stopLoading: () => {
-    set(
-      produce<AuthStoreType>((state) => {
-        state.isLoading = false;
-      })
-    );
-  },
+  getData: () => {
+    try {
+      const data = JSON.parse(localStorage.getItem('booking') || "[]")
+      set(
+        produce<AuthStoreType>((state) => {
+          state.data = data;
+        })
+      );
+    } catch (err) {
+      localStorage.removeItem('booking');
+    }
+  }
 }));
 
-const useAuthStore = createSelectorHooks(useAuthStoreBase);
+const useBookStore = createSelectorHooks(useBooktoreBase);
 
-export default useAuthStore;
+export default useBookStore;
