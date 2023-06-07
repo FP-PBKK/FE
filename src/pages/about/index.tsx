@@ -2,6 +2,7 @@ import { Layout } from '@/components/Layout';
 import React from 'react';
 import { FaRegSmile, FaCheckCircle, FaRegImage, FaRegTimesCircle } from 'react-icons/fa';
 import CardAbout from '../../components/CardAbout';
+import Map from '@/components/Map';
 
 const index = () => {
   return (
@@ -12,8 +13,8 @@ const index = () => {
           <p className="p"> Platform inovatif yang dirancang khusus untuk memudahkan Anda dalam memesan studio foto secara online</p>
         </div>
 
-        <div className="w-screen h-48 p-2 overflow-hidden">
-          <h1 className=" text-white text-center font-bold">WHY BOOK WITH US?</h1>
+        <div className="w-screen h-48 p-2 bg-black overflow-hidden">
+          <h1 className="text-white text-center font-bold">WHY BOOK WITH US?</h1>
           <div className="flex flex-row justify-center items-center space-x-6 p-4">
             <CardAbout>
               <FaRegSmile size={60} />
@@ -50,6 +51,7 @@ const index = () => {
 
         <div className="w-screen flex justify-center items-center flex-col space-y-4 h-96 p-2">
           <p className="h1 text-center font-bold">Lokasi</p>
+          <Map/>
         </div>
       </div>
     </Layout>
