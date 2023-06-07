@@ -7,7 +7,7 @@ import { DEFAULT_TOAST_MESSAGE } from '@/constant/toast';
 import apiMock from '@/lib/axios-mock';
 import useAuthStore from '@/store/useAuthStore';
 import useBookStore from '@/store/useBookStore';
-import { ApiReturn } from '@/types/api';
+import { AddAdditionalItems, AdditionalItem, Booking, Paket, Schedule } from '@/types/book';
 import { useRouter } from 'next/router';
 import * as react from 'react'
 import Calendar from 'react-calendar';
@@ -16,67 +16,138 @@ import { Toaster, toast } from 'react-hot-toast';
 export default withAuth(index, 'optional');
 function index() {
   const isAuthenticated = useAuthStore.useIsAuthenticated()
-  const [value, setValue] = react.useState('');
+  const user = useAuthStore.useUser()
+  const setBooking = useBookStore.useSetData()
+  const [value, setValue] = react.useState(formatDate(new Date()));
   const router = useRouter();
 
   const [paket, setPaket] = react.useState<Paket[]>([])
   const [time, setTime] = react.useState<Schedule[]>([])
+  const [additionalitems, setAdditionalItems] = react.useState<AdditionalItem[]>([])
+  const [addAdditionalItems, setAddAdditionalItems] = react.useState<AddAdditionalItems[]>([])
+  const [note, setNote] = react.useState('')
   const [price, setPrice] = react.useState()
+  const [idPackage, setIdPackage] = react.useState()
+  const [scheduleId, setScheduleid] = react.useState()
 
-  type Schedule = {
-    id: string,
-    time: string,
-    isBooked: boolean
+
+  const hadleAdditionalUpdate = (data: AdditionalItem) => {
+    const itemLength = addAdditionalItems.length >= 1 ? true : false
+    if (itemLength) {
+      const checkItemExist = addAdditionalItems.find(item => item.idItem === data.id)
+      if (checkItemExist) {
+        let currentItem = addAdditionalItems.filter(item => item.idItem === data.id);
+        currentItem[0].quantity = currentItem[0].quantity + 1;
+        let elseItems = addAdditionalItems.filter(item => item.idItem != data.id);
+        let newData = currentItem.concat(elseItems)
+        console.log(currentItem);
+
+        setAddAdditionalItems([...newData]);
+      } else {
+        let temp: AddAdditionalItems = {
+          idItem: data.id,
+          quantity: 1,
+          name: data.name,
+          price: data.price
+        }
+        setAddAdditionalItems([...addAdditionalItems, temp])
+      }
+    } else {
+      let temp: AddAdditionalItems = {
+        idItem: data.id,
+        quantity: 1,
+        name: data.name,
+        price: data.price
+      }
+      setAddAdditionalItems([...addAdditionalItems, temp])
+    }
   }
-  type Paket = {
-    id: string,
-    name: string,
-    price: string,
-    description: string
+  const handleDecrease = (data: AdditionalItem) => {
+    const itemLength = addAdditionalItems.length >= 1 ? true : false
+    console.log(itemLength);
+    if (itemLength) {
+      const checkItemExist = addAdditionalItems.find(item => item.idItem === data.id)
+      if (checkItemExist) {
+        let currentItem = addAdditionalItems.filter(item => item.idItem === data.id);
+        if (currentItem[0].quantity > 0) {
+          currentItem[0].quantity = currentItem[0].quantity - 1;
+        } else {
+          currentItem[0].quantity = currentItem[0].quantity
+        }
+        let elseItems = addAdditionalItems.filter(item => item.idItem != data.id);
+        let newData = currentItem.concat(elseItems)
+
+        setAddAdditionalItems([...newData]);
+      }
+    }
   }
+
   const handleSubmit = (e: any) => {
     e.preventDefault()
-    let temp = {
-      id: +new Date(),
-      users_id: "sas",
-      transaction_id: "sasa",
-      schedules_id: 'sasa',
-      package_id: 'sasa',
-      booking_status_id: "sasa"
+   
+    const sortAdditionalItem = addAdditionalItems.sort((a,b)=>{
+      return parseInt(a.idItem[6]) - parseInt(b.idItem[6])
+    })
+    let total :number = 0
+    sortAdditionalItem.forEach(a=> total += (a.price*a.quantity))
+    
+    let temp: Booking = {
+      id_user: user?.id,
+      id_schedule: scheduleId,
+      id_package: idPackage,
+      date: value,
+      note: note,
+      booking_status: "unpaid",
+      additional_items: sortAdditionalItem
     }
+    setBooking({data:"sas",total:total})
+    // toast.promise(
+    //   apiMock.post(`/booking/booking`,temp)
+    //     .then((res) => {
+    //       router.push('/booking/next')
+    //     }),
+    //   {
+    //     ...DEFAULT_TOAST_MESSAGE,
+    //     success: 'Booking Successfully Created',
+    //   }
+    // );
 
-    toast.promise(
-      apiMock.post(`/user`, temp)
-        .then((res) => {
-          router.push('/booking/next')
-        }),
-      {
-        ...DEFAULT_TOAST_MESSAGE,
-        success: 'Booking Successfully Created',
-      }
-    );
-
-    // login(temp)
   }
+  function formatDate(date: Date) {
+    var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
 
+    if (month.length < 2)
+      month = '0' + month;
+    if (day.length < 2)
+      day = '0' + day;
+
+    return [year, month, day].join('-');
+  }
 
   const getJam = async () => {
     try {
       const responsePackage = await apiMock.get('/booking/packages')
-      const responseSchedule = await apiMock.post('/booking/schedule/booked', {
-        'date': value
-      })
-      console.log(responseSchedule.data.data);
+      const responseSchedule = await apiMock.get(`/booking/schedule/booked/${value}`)
+      const responseAdditionalItems = await apiMock.get('/booking/additionalitems')
       setTime(responseSchedule.data.data)
-      setPaket(responsePackage.data.data
-      )
+      setPaket(responsePackage.data.data)
+      setAdditionalItems(responseAdditionalItems.data.data)
     } catch (error) {
       console.log(error);
     }
   }
   const handleSetPrice = (e: any) => {
-    setPrice(e.target.value)
+    let data = e.target.value
+    setIdPackage(data.split(',')[0])
+    setPrice(data.split(',')[1])
   }
+  const handleScheduleId = (e: any) => {
+    setScheduleid(e.target.value)
+  }
+
 
   react.useEffect(() => {
     getJam()
@@ -89,17 +160,16 @@ function index() {
           <div className="w-full md:w-[80%] md:h-[70%]">
             <div className="flex flex-col items-center justify-center space-x-3 md:flex-row">
 
-              <div className="w-[60%] space-y-1 text-center">
+              <div className="w-[60%] h-auto space-y-1 text-center">
                 <p className="mt-10 mb-0 h1 md:mb-2 md:mt-0" >Pilih tanggal dan waktu</p>
                 <div className="flex flex-col md:flex-row">
-                  <Calendar onClickDay={(date) => setValue(date.toLocaleString('en-GB').split(',')[0])} showWeekNumbers value={value} locale='en' />
-
+                  <Calendar onClickDay={(date) => setValue(formatDate(date))} value={value} locale='en' />
                   <div className="w-full md:w-[50%] min-h-full overflow-hidden md:ml-4">
                     <div className={`mt-4 md:m-0 overflow-hidden space-y-2`}>
                       {
                         time.map((schedule, index) => {
                           return (
-                            <Checkbox key={index} value={schedule.id}>{schedule.time}</Checkbox>
+                            <Checkbox key={index} onClick={(e) => handleScheduleId(e)} value={schedule.id}>{schedule.time}</Checkbox>
                           )
                         })
                       }
@@ -108,22 +178,25 @@ function index() {
                 </div>
               </div>
 
-              <div className="w-full md:w-[40%] mt-0 md:-mt-12 flex flex-col justify-center">
+              <div className="w-full h-auto md:w-[40%] md mt-0 flex flex-col justify-center">
                 <p className="text-center h1">Pilih paket</p>
                 <div className="flex flex-col gap-4">
-                <p>{price}</p>
                   <div className="grid grid-cols-3 m-auto mt-4 gap-y-7">
                     {
                       paket.map((paket, index) => {
                         return (
-                          <Checkbox key={index} onClick={(e) => handleSetPrice(e)} value={paket.price}>{paket.name}</Checkbox>
+                          <Checkbox key={index} onClick={(e) => handleSetPrice(e)} value={`${paket.id},${paket.price}`}>{paket.name}</Checkbox>
                         )
                       })
                     }
                   </div>
+                  <div className='flex flex-col'>
+                    <label>Pesan</label>
+                    <textarea required value={note} onChange={(e) => setNote(e.target.value)} className='border-2 h-16 border-solid border-gray-500 focus:outline-0' name='pesan'></textarea>
+                  </div>
                   <div className="m-auto md:m-0">
-                    <p className="p">Kediri {value}</p>
-                    {/* <p className="text-black p">{value.toDateString()} jam {tempTime} paket {temp}  </p> */}
+                    <p className='p'>Ringkasan</p>
+                    <p className="p">Kediri {value} jam harga {price}</p>
                   </div>
                   <button type="submit" disabled={!isAuthenticated} className={`${isAuthenticated && " hover:bg-slate-500"} w-24 m-auto overflow-hidden border-2  md:m-0`}>
                     submit
@@ -132,6 +205,60 @@ function index() {
                     !isAuthenticated && <p className='p'>Anda harus Login untuk melanjutkan</p>
                   }
                 </div>
+              </div>
+
+
+            </div>
+            <div className='flex justify-center items-center'>
+              <div className='flex flex-col'>
+                {/* {
+                    additionalitems?.map((additionalitems, index) => {
+                      return (
+                        <>
+                        <p key={index} onClick={(e) => hadleAdditionalUpdate(additionalitems.id)}>{additionalitems.name}</p>
+                        <button type='button' key={index} onClick={(e) => hadleAdditionalUpdate(additionalitems.id)}>+</button>
+                        <button type='button' key={index} onClick={(e) => handleDecrease(additionalitems.id)}>-</button>
+                        </>
+                      )
+                    })
+                  }
+                  {
+                    addAdditionalItems.map((data)=>{
+                      return(
+                        <p>{data.quantity}</p>
+                      )
+                    })
+                  } */}
+                <table>
+                  <tbody>
+                    {
+                      additionalitems.map((additionalitems, index) => {
+                        return (
+                          <tr key={index}>
+                            <td>
+                              {additionalitems.name}
+                            </td>
+                            <td>
+                              <button type='button' key={index} onClick={(e) => handleDecrease(additionalitems)}>-</button>
+                            </td>
+                            <td>
+                              <button type='button' key={index} onClick={(e) => hadleAdditionalUpdate(additionalitems)}>+</button>
+                            </td>
+                          </tr>
+                        )
+                      })
+                    }
+                    {
+                      addAdditionalItems.map((data) => {
+                        return (
+                          <td>
+                            {data.quantity}
+                          </td>
+                        )
+                      })
+                    }
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>

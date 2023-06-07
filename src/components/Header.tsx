@@ -50,7 +50,7 @@ export const Header = () => {
                     </li>
                     <li className='flex justify-center items-center flex-col'>
                     {
-                        user ? <><span>{user.username}</span> <button onClick={handleLogout}>Logout</button></> :  <><FaUserCircle size={20} /> <Links href='/auth'>Login</Links></>
+                        user ? <><p className='h4'>{user.username}</p> <button onClick={handleLogout} className='h4'>Logout</button></> :  <><FaUserCircle size={20} /> <Links href='/auth'>Login</Links></>
                     }
                    
                     </li>
