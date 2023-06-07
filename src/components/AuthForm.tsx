@@ -1,6 +1,5 @@
 'use client';
 
-import axios from "axios";
 import { useCallback, useEffect, useState } from 'react';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { useRouter } from "next/navigation";
