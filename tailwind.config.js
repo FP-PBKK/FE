@@ -14,6 +14,8 @@ module.exports = {
       },
       colors: {
         dark: '#222222',
+        abu: '#E5E5E5',
+        abu2: '#484747'
       }
     },
   },
