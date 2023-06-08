@@ -13,13 +13,13 @@ import * as react from 'react'
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { Toaster, toast } from 'react-hot-toast';
-export default withAuth(index, 'optional');
-function index() {
+export default withAuth(Index, 'optional');
+function Index() {
   const isAuthenticated = useAuthStore.useIsAuthenticated()
   const user = useAuthStore.useUser()
   const setBooking = useBookStore.useSetData()
   const [value, setValue] = react.useState(formatDate(new Date()));
-  const router = useRouter();
+  const Router = useRouter();
 
   const [paket, setPaket] = react.useState<Paket[]>([])
   const [time, setTime] = react.useState<Schedule[]>([])
@@ -104,7 +104,7 @@ function index() {
     // toast.promise(
     //   apiMock.post(`/booking/booking`,temp)
     //     .then((res) => {
-    //       router.push('/booking/next')
+    //       Router.push('/booking/next')
     //     }),
     //   {
     //     ...DEFAULT_TOAST_MESSAGE,
@@ -249,9 +249,9 @@ function index() {
                       })
                     }
                     {
-                      addAdditionalItems.map((data) => {
+                      addAdditionalItems.map((data,index) => {
                         return (
-                          <td>
+                          <td key={index}>
                             {data.quantity}
                           </td>
                         )

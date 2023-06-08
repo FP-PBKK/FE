@@ -9,12 +9,7 @@ import useAuthStore from '@/store/useAuthStore'
 const inter = Inter({ subsets: ['latin'] })
 export default withAuth(Home, 'optional');
 function Home() {
-  const user = useAuthStore.useUser();
-  const isAuthenticated = useAuthStore.useIsAuthenticated();
-  console.log(user);
-  console.log(isAuthenticated);
-  
-  
+
   return (
    <Layout>
      <div className='space-y-4 overflow-hidden min-h-main'>

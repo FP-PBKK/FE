@@ -1,19 +1,22 @@
 import { Layout } from '@/components/Layout'
 import withAuth from '@/components/hoc/withAuth'
+import { DEFAULT_TOAST_MESSAGE } from '@/constant/toast'
 import apiMock from '@/lib/axios-mock'
 import useAuthStore from '@/store/useAuthStore'
 import useBookStore from '@/store/useBookStore'
+import { Transaction } from '@/types/transaction'
 import { useRouter } from 'next/router'
 import * as react from 'react'
 import { toast } from 'react-hot-toast'
-export default withAuth(next, 'all')
-function next() {
+export default withAuth(Next, 'all')
+function Next() {
   const bookData = useBookStore.useData()
   const getData = useBookStore.useGetData()
   const [discount, setDiscount] = react.useState("")
-  const router = useRouter()
+  const [total,setTotal] = react.useState(bookData?.total)
+  const Router = useRouter()
   const handleBack = () => {
-    router.push('/booking')
+    Router.push('/booking')
   }
 
   react.useEffect(() => {
@@ -27,6 +30,23 @@ function next() {
     }catch(err){
       toast.error("error")
     }
+  }
+  const handleSubmit=()=>{
+    let data : Transaction ={
+      id_booking : bookData?.data,
+      total : total,
+      discount_id :discount
+    }
+    toast.promise(
+      apiMock.post(`/user/login`, data)
+        .then((res) => {
+          
+        }),
+      {
+        ...DEFAULT_TOAST_MESSAGE,
+        success: 'Transaksi Berhasil Dibuat',
+      }
+    );
   }
   // const loadData = useBookStore.useGetData()
   // react.useEffect(()=>{
@@ -42,7 +62,7 @@ function next() {
         <p>Detail Pembayaran</p>
         <div className='w-full flex flex-row justify-center p-4 space-x-4'>
           <div>
-          <form className='flex flex-col w-64 md:flex-row justify-center items-center md:space-y-0 space-y-8 md:space-x-8'>
+          <form onSubmit={handleSubmit} className='flex flex-col w-64 md:flex-row justify-center items-center md:space-y-0 space-y-8 md:space-x-8'>
             <div className='flex flex-col'>
             <div className='flex flex-col space-y-2'>
               <p className='p font-medium'>Kediri</p>
