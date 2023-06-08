@@ -1,24 +1,31 @@
 import { Layout } from '@/components/Layout'
 import withAuth from '@/components/hoc/withAuth'
+import { DEFAULT_TOAST_MESSAGE } from '@/constant/toast'
 import apiMock from '@/lib/axios-mock'
 import useAuthStore from '@/store/useAuthStore'
 import useBookStore from '@/store/useBookStore'
+import { Transaction } from '@/types/transaction'
 import { useRouter } from 'next/router'
 import * as react from 'react'
 import { toast } from 'react-hot-toast'
-export default withAuth(next, 'all')
-function next() {
+export default withAuth(Next, 'all')
+function Next() {
   const bookData = useBookStore.useData()
+  console.log(bookData);
+  
   const getData = useBookStore.useGetData()
-  const [discount, setDiscount] = react.useState("")
-  const router = useRouter()
+  const removeData = useBookStore.useRemoveData()
+  const [discount, setDiscount] = react.useState("no")
+  const [total,setTotal] = react.useState()
+  const [qr,setQr] = react.useState('')
+  const Router = useRouter()
   const handleBack = () => {
-    router.push('/booking')
+    Router.push('/booking')
   }
 
   react.useEffect(() => {
     getData()
-  }, [])
+  },[])
 
   const handleCheckDiscount = async ()=>{
     try{
@@ -27,6 +34,35 @@ function next() {
     }catch(err){
       toast.error("error")
     }
+  }
+  const handleSubmit= async (e:any)=>{
+    e.preventDefault()
+    let data : Transaction ={
+      id_booking : bookData?.bookingId,
+      total : bookData?.total,
+      discount_id :discount
+    }
+    console.log(data);
+    
+    toast.promise(
+      apiMock.post(`/transaction`, data)
+        .then((res) => {
+          setQr(res.data.data.qrId)
+        }).then(()=>{
+          createQr()
+          removeData()
+        }),
+      {
+        ...DEFAULT_TOAST_MESSAGE,
+        success: 'Transaksi Berhasil Dibuat',
+      }
+    );
+    
+  }
+
+  async function createQr (){
+    const response = await apiMock.get(`/transaction/getqr/${qr}&&${bookData?.total}`)
+    console.log(response);
   }
   // const loadData = useBookStore.useGetData()
   // react.useEffect(()=>{
@@ -42,14 +78,14 @@ function next() {
         <p>Detail Pembayaran</p>
         <div className='w-full flex flex-row justify-center p-4 space-x-4'>
           <div>
-          <form className='flex flex-col w-64 md:flex-row justify-center items-center md:space-y-0 space-y-8 md:space-x-8'>
+          <form onSubmit={handleSubmit} className='flex flex-col w-64 md:flex-row justify-center items-center md:space-y-0 space-y-8 md:space-x-8'>
             <div className='flex flex-col'>
             <div className='flex flex-col space-y-2'>
               <p className='p font-medium'>Kediri</p>
-              <p className='p'>{bookData?.total}{bookData?.data}</p>
+              <p className='p'>{bookData?.total}{bookData?.bookingId}</p>
 
               <div className='flex flex-row space-x-3'>
-                <p className='p'>Total Bayar:Rp sas</p>
+                <p className='p'>Total Bayar:Rp {bookData?.total}</p>
               </div>
             </div>
 
