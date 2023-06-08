@@ -11,9 +11,13 @@ import { toast } from 'react-hot-toast'
 export default withAuth(Next, 'all')
 function Next() {
   const bookData = useBookStore.useData()
+  console.log(bookData);
+  
   const getData = useBookStore.useGetData()
-  const [discount, setDiscount] = react.useState("")
-  const [total,setTotal] = react.useState(bookData?.total)
+  const removeData = useBookStore.useRemoveData()
+  const [discount, setDiscount] = react.useState("no")
+  const [total,setTotal] = react.useState()
+  const [qr,setQr] = react.useState('')
   const Router = useRouter()
   const handleBack = () => {
     Router.push('/booking')
@@ -21,7 +25,7 @@ function Next() {
 
   react.useEffect(() => {
     getData()
-  }, [])
+  },[])
 
   const handleCheckDiscount = async ()=>{
     try{
@@ -31,22 +35,34 @@ function Next() {
       toast.error("error")
     }
   }
-  const handleSubmit=()=>{
+  const handleSubmit= async (e:any)=>{
+    e.preventDefault()
     let data : Transaction ={
-      id_booking : bookData?.data,
-      total : total,
+      id_booking : bookData?.bookingId,
+      total : bookData?.total,
       discount_id :discount
     }
+    console.log(data);
+    
     toast.promise(
-      apiMock.post(`/user/login`, data)
+      apiMock.post(`/transaction`, data)
         .then((res) => {
-          
+          setQr(res.data.data.qrId)
+        }).then(()=>{
+          createQr()
+          removeData()
         }),
       {
         ...DEFAULT_TOAST_MESSAGE,
         success: 'Transaksi Berhasil Dibuat',
       }
     );
+    
+  }
+
+  async function createQr (){
+    const response = await apiMock.get(`/transaction/getqr/${qr}&&${bookData?.total}`)
+    console.log(response);
   }
   // const loadData = useBookStore.useGetData()
   // react.useEffect(()=>{
@@ -66,10 +82,10 @@ function Next() {
             <div className='flex flex-col'>
             <div className='flex flex-col space-y-2'>
               <p className='p font-medium'>Kediri</p>
-              <p className='p'>{bookData?.total}{bookData?.data}</p>
+              <p className='p'>{bookData?.total}{bookData?.bookingId}</p>
 
               <div className='flex flex-row space-x-3'>
-                <p className='p'>Total Bayar:Rp sas</p>
+                <p className='p'>Total Bayar:Rp {bookData?.total}</p>
               </div>
             </div>
 

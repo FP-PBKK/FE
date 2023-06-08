@@ -2,6 +2,7 @@
 
 import { Layout } from '@/components/Layout'
 import Checkbox from '@/components/buttons/Checkbox';
+import ConfirmCard from '@/components/card/ConfirmCard';
 import withAuth from '@/components/hoc/withAuth';
 import { DEFAULT_TOAST_MESSAGE } from '@/constant/toast';
 import apiMock from '@/lib/axios-mock';
@@ -23,12 +24,17 @@ function Index() {
 
   const [paket, setPaket] = react.useState<Paket[]>([])
   const [time, setTime] = react.useState<Schedule[]>([])
+  
   const [additionalitems, setAdditionalItems] = react.useState<AdditionalItem[]>([])
   const [addAdditionalItems, setAddAdditionalItems] = react.useState<AddAdditionalItems[]>([])
   const [note, setNote] = react.useState('')
-  const [price, setPrice] = react.useState()
+  const [price, setPrice] = react.useState(0)
   const [idPackage, setIdPackage] = react.useState()
   const [scheduleId, setScheduleid] = react.useState()
+  const [scheduleValue,setScheduleValue] = react.useState()
+  const [isOpen, setIsOpen] = react.useState(false)
+  const [tempTotal,setTempTotal] = react.useState(0)
+  const [tempData,setTempData] = react.useState<Booking>()
 
 
   const hadleAdditionalUpdate = (data: AdditionalItem) => {
@@ -40,9 +46,11 @@ function Index() {
         currentItem[0].quantity = currentItem[0].quantity + 1;
         let elseItems = addAdditionalItems.filter(item => item.idItem != data.id);
         let newData = currentItem.concat(elseItems)
-        console.log(currentItem);
+        const sortAdditionalItem = newData.sort((a, b) => {
+          return parseInt(a.idItem[6]) - parseInt(b.idItem[6])
+        })
 
-        setAddAdditionalItems([...newData]);
+        setAddAdditionalItems([...sortAdditionalItem]);
       } else {
         let temp: AddAdditionalItems = {
           idItem: data.id,
@@ -64,7 +72,6 @@ function Index() {
   }
   const handleDecrease = (data: AdditionalItem) => {
     const itemLength = addAdditionalItems.length >= 1 ? true : false
-    console.log(itemLength);
     if (itemLength) {
       const checkItemExist = addAdditionalItems.find(item => item.idItem === data.id)
       if (checkItemExist) {
@@ -76,21 +83,23 @@ function Index() {
         }
         let elseItems = addAdditionalItems.filter(item => item.idItem != data.id);
         let newData = currentItem.concat(elseItems)
-
-        setAddAdditionalItems([...newData]);
+        const sortAdditionalItem = newData.sort((a, b) => {
+          return parseInt(a.idItem[6]) - parseInt(b.idItem[6])
+        })
+        setAddAdditionalItems([...sortAdditionalItem]);
       }
     }
   }
 
   const handleSubmit = (e: any) => {
     e.preventDefault()
-   
-    const sortAdditionalItem = addAdditionalItems.sort((a,b)=>{
+    
+    const sortAdditionalItem = addAdditionalItems.sort((a, b) => {
       return parseInt(a.idItem[6]) - parseInt(b.idItem[6])
     })
-    let total :number = 0
-    sortAdditionalItem.forEach(a=> total += (a.price*a.quantity))
-    
+    let total: number  = price
+    sortAdditionalItem.forEach(a => total += (a.price * a.quantity))
+
     let temp: Booking = {
       id_user: user?.id,
       id_schedule: scheduleId,
@@ -100,18 +109,23 @@ function Index() {
       booking_status: "unpaid",
       additional_items: sortAdditionalItem
     }
-    setBooking({data:"sas",total:total})
-    // toast.promise(
-    //   apiMock.post(`/booking/booking`,temp)
-    //     .then((res) => {
-    //       Router.push('/booking/next')
-    //     }),
-    //   {
-    //     ...DEFAULT_TOAST_MESSAGE,
-    //     success: 'Booking Successfully Created',
-    //   }
-    // );
+    setTempTotal(total)
+    setTempData(temp)
+    setIsOpen(true)
+  }
 
+  function onCreateBooking(){
+    toast.promise(
+      apiMock.post(`/booking/booking`,tempData)
+        .then((res) => {
+          setBooking({bookingId: res.data.data.bookingId, total: tempTotal})
+          Router.push('/booking/next')
+        }),
+      {
+        ...DEFAULT_TOAST_MESSAGE,
+        success: 'Booking Successfully Created',
+      }
+    );
   }
   function formatDate(date: Date) {
     var d = new Date(date),
@@ -136,18 +150,26 @@ function Index() {
       setPaket(responsePackage.data.data)
       setAdditionalItems(responseAdditionalItems.data.data)
     } catch (error) {
-      console.log(error);
+      toast.error("Terjadi kesalahan")
     }
   }
   const handleSetPrice = (e: any) => {
     let data = e.target.value
     setIdPackage(data.split(',')[0])
-    setPrice(data.split(',')[1])
+    setPrice(parseInt(data.split(',')[1]))
   }
   const handleScheduleId = (e: any) => {
-    setScheduleid(e.target.value)
+    let data = e.target.value
+    setScheduleid(data.split(',')[0])
+    setScheduleValue(data.split(',')[1])
   }
+  const dataAdd = addAdditionalItems?.map((data) => {
+    return data
+  })
 
+  function handlerOnclick() {
+    setIsOpen(!isOpen)
+}
 
   react.useEffect(() => {
     getJam()
@@ -169,7 +191,7 @@ function Index() {
                       {
                         time.map((schedule, index) => {
                           return (
-                            <Checkbox key={index} onClick={(e) => handleScheduleId(e)} value={schedule.id}>{schedule.time}</Checkbox>
+                            <Checkbox key={index} disable={schedule.isBooked} onClick={(e) => handleScheduleId(e)} value={`${schedule.id},${schedule.time}`}>{schedule.time}</Checkbox>
                           )
                         })
                       }
@@ -196,7 +218,7 @@ function Index() {
                   </div>
                   <div className="m-auto md:m-0">
                     <p className='p'>Ringkasan</p>
-                    <p className="p">Kediri {value} jam harga {price}</p>
+                    <p className="p">Kediri {value} jam {scheduleValue} harga RP{price}</p>
                   </div>
                   <button type="submit" disabled={!isAuthenticated} className={`${isAuthenticated && " hover:bg-slate-500"} w-24 m-auto overflow-hidden border-2  md:m-0`}>
                     submit
@@ -206,36 +228,29 @@ function Index() {
                   }
                 </div>
               </div>
-
-
             </div>
             <div className='flex justify-center items-center'>
-              <div className='flex flex-col'>
-                {/* {
-                    additionalitems?.map((additionalitems, index) => {
-                      return (
-                        <>
-                        <p key={index} onClick={(e) => hadleAdditionalUpdate(additionalitems.id)}>{additionalitems.name}</p>
-                        <button type='button' key={index} onClick={(e) => hadleAdditionalUpdate(additionalitems.id)}>+</button>
-                        <button type='button' key={index} onClick={(e) => handleDecrease(additionalitems.id)}>-</button>
-                        </>
-                      )
-                    })
-                  }
-                  {
-                    addAdditionalItems.map((data)=>{
-                      return(
-                        <p>{data.quantity}</p>
-                      )
-                    })
-                  } */}
+              <div className='flex'>
                 <table>
+                  <thead>
+                    <tr>
+                      <th>
+                        Item
+                      </th>
+                      <th>
+                        Kurang
+                      </th>
+                      <th>
+                        Tambah
+                      </th>
+                    </tr>
+                  </thead>
                   <tbody>
                     {
                       additionalitems.map((additionalitems, index) => {
                         return (
-                          <tr key={index}>
-                            <td>
+                          <tr key={index} className='text-center'>
+                            <td className='text-left'>
                               {additionalitems.name}
                             </td>
                             <td>
@@ -248,22 +263,55 @@ function Index() {
                         )
                       })
                     }
-                    {
-                      addAdditionalItems.map((data,index) => {
-                        return (
-                          <td key={index}>
-                            {data.quantity}
-                          </td>
-                        )
-                      })
-                    }
                   </tbody>
                 </table>
+
+                <table className='text-center'>
+                  <thead>
+                    <tr>
+                      <th>
+                        Total
+                      </th>
+                    </tr>
+                  </thead>
+                    {
+                      <tbody>
+                      <tr>
+                        <td key={dataAdd[0]?.idItem}>
+                          {dataAdd[0]?.quantity ? dataAdd[0].quantity : "0"}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td key={dataAdd[1]?.idItem}>
+                          {dataAdd[1]?.quantity ? dataAdd[1].quantity : "0"}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td key={dataAdd[2]?.idItem}>
+                          {dataAdd[2]?.quantity ? dataAdd[2].quantity : "0"}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td key={dataAdd[3]?.idItem}>
+                          {dataAdd[3]?.quantity ? dataAdd[3].quantity : "0"}
+                        </td>
+                      </tr>
+                      </tbody>
+                    }
+                </table>
+
               </div>
             </div>
           </div>
         </form>
       </div>
+      <ConfirmCard isOpen={isOpen} onCreateBooking={onCreateBooking} onclick={handlerOnclick} data={{
+        date: value,
+        time: scheduleValue,
+        total: tempTotal,
+      }
+        
+      }/>
     </Layout>
   )
 }

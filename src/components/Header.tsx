@@ -6,12 +6,17 @@ import { FaAlignJustify, FaRegTimesCircle, FaUserCircle } from 'react-icons/fa';
 import Image from 'next/image';
 import useAuthStore from '@/store/useAuthStore';
 import { toast } from 'react-hot-toast';
+import { useRouter } from 'next/router';
 
 
 export const Header = () => {
     const [open, setOpen] = react.useState(false)
+    const router = useRouter()
     const user = useAuthStore.useUser();
     const logout = useAuthStore.useLogout();
+    const handleHistory = () =>{
+        router.push('/payment/all')
+    }
     const handleLogout= ()=>{
         try {
             logout()
@@ -50,7 +55,7 @@ export const Header = () => {
                     </li>
                     <li className='flex justify-center items-center flex-col'>
                     {
-                        user ? <><p className='h4'>{user.username}</p> <button onClick={handleLogout} className='h4'>Logout</button></> :  <><FaUserCircle size={20} /> <Links href='/auth'>Login</Links></>
+                        user ? <><button onClick={handleHistory}><p className='h4'>{user.username}</p></button> <button onClick={handleLogout} className='h4'>Logout</button></> :  <><FaUserCircle size={20} /> <Links href='/auth'>Login</Links></>
                     }
                    
                     </li>

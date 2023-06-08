@@ -9,7 +9,7 @@ export type Booking = {
 }
 export type AddAdditionalItems = {
     idItem: string,
-    quantity: number,
+    quantity: number | 0,
     name: string,
     price : number
 }
