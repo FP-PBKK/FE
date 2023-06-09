@@ -16,8 +16,6 @@ function Next() {
   const getData = useBookStore.useGetData()
   const removeData = useBookStore.useRemoveData()
   const [discount, setDiscount] = react.useState("no")
-  const [total,setTotal] = react.useState()
-  const [qr,setQr] = react.useState('')
   const Router = useRouter()
   const handleBack = () => {
     Router.push('/booking')
@@ -42,14 +40,11 @@ function Next() {
       total : bookData?.total,
       discount_id :discount
     }
-    console.log(data);
-    
     toast.promise(
       apiMock.post(`/transaction`, data)
         .then((res) => {
-          setQr(res.data.data.qrId)
+          createQr(res.data.data.qrId,res.data.data.transactionId)
         }).then(()=>{
-          createQr()
           removeData()
         }),
       {
@@ -60,16 +55,13 @@ function Next() {
     
   }
 
-  async function createQr (){
-    const response = await apiMock.get(`/transaction/getqr/${qr}&&${bookData?.total}`)
+  async function createQr (id:string,transId:string){
+    const response = await apiMock.get(`/transaction/getqr/${id}&&${bookData?.total}`)
+    console.log(transId);
+    
+    if(response.statusText == "OK") Router.push(`/payment/${transId}`)
     console.log(response);
   }
-  // const loadData = useBookStore.useGetData()
-  // react.useEffect(()=>{
-  //   loadData()
-  // },[])
-  // const data = useBookStore.useData()
-  // console.log(data);
   const styleinput = 'border-2 border-solid border-gray-500 focus:outline-0'
   return (
     <Layout>

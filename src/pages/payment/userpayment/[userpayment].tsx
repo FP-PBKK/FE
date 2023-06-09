@@ -1,11 +1,19 @@
 import { Layout } from '@/components/Layout';
+import withAuth from '@/components/hoc/withAuth';
+import useAuthStore from '@/store/useAuthStore';
 import axios from 'axios';
-import { GetStaticProps } from 'next';
+import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
-import React from 'react'
-
-const All = ({ data }: { data: any }) => {
+import * as react from 'react'
+const Userpayment: NextPage<{ data: any }> = ({ data }) => {
     const router = useRouter()
+    const user = useAuthStore.useIsAuthenticated()
+    function check (){
+        if(!user) return router.push('/auth')
+    }
+    react.useEffect(()=>{
+        check()
+    },[])
     const handlePay = (data:string)=>{
         router.push(`/payment/${data}`)
     }
@@ -43,17 +51,11 @@ const All = ({ data }: { data: any }) => {
                                     scope="col"
                                     className="px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
                                 >
-                                    Tanggal
+                                    Diskon
                                 </th>
                                 <th
                                     scope="col"
-                                    className="px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
-                                >
-                                    Jam
-                                </th>
-                                <th
-                                    scope="col"
-                                    className="px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
+                                    className="px-6 py-3 text-xs font-bold text-center text-gray-500 uppercase "
                                 >
                                     Status
                                 </th>
@@ -80,10 +82,10 @@ const All = ({ data }: { data: any }) => {
                                             </td>
 
                                             {
-                                                data.paid === 1 || data.lunas === 0 ? <td className="px-6 py-4 text-sm bg-green-400 text-black whitespace-nowrap">
-                                                    {data.paid}
-                                                </td> : <td className="px-6 py-4 text-sm text-gray-800 whitespace-nowrap">
-                                                    {data.padi} <button onClick={()=>handlePay(data.id)} >|Bayar Sekarang</button>
+                                                data.paid === 1 || data.lunas === 0 ? <td className="px-6 py-4 text-sm text-center bg-green-400 text-black whitespace-nowrap">
+                                                    {data.paid && "Lunas"}
+                                                </td> : <td className="px-6 py-4 text-sm text-center text-gray-800 whitespace-nowrap">
+                                                    {data.paid == 0 && "Belum"} <button onClick={()=>handlePay(data.id)} >|Bayar Sekarang</button>
                                                 </td>
                                             }
 
@@ -99,12 +101,26 @@ const All = ({ data }: { data: any }) => {
         </Layout >
     )
 }
+export const getStaticPaths: GetStaticPaths = async () => {
+    const response = await axios.get('http://localhost:5000/api/user')
+    const paths = response.data.data.map((data: any) => ({
+        params: { userpayment: data?.id.toString() }
+    }))
+    console.log(paths);
+    
+    return {
+        paths,
+        fallback: true
+    }
+}
 
-export const getStaticProps: GetStaticProps = async () => {
-    const res = await axios.get(`http://localhost:5000/api/transaction/`)
+export const getStaticProps: GetStaticProps = async (context) => {
+    const { userpayment }: any = context.params;
+    
+    const res = await axios.get(`http://localhost:5000/api/transaction/user/${userpayment}`)
 
     return {
         props: { data: res.data.data },
     };
 };
-export default All
+export default Userpayment

@@ -4,7 +4,7 @@ import {create} from 'zustand';
 import { produce } from 'immer';
 
 type Booking = {
-  data : string,
+  bookingId : string,
   total:number
 }
 

@@ -20,7 +20,7 @@ function Index() {
   const user = useAuthStore.useUser()
   const setBooking = useBookStore.useSetData()
   const [value, setValue] = react.useState(formatDate(new Date()));
-  const Router = useRouter();
+  const router = useRouter();
 
   const [paket, setPaket] = react.useState<Paket[]>([])
   const [time, setTime] = react.useState<Schedule[]>([])
@@ -119,7 +119,8 @@ function Index() {
       apiMock.post(`/booking/booking`,tempData)
         .then((res) => {
           setBooking({bookingId: res.data.data.bookingId, total: tempTotal})
-          Router.push('/booking/next')
+        }).then(()=>{
+          router.push('/booking/next')
         }),
       {
         ...DEFAULT_TOAST_MESSAGE,
@@ -185,7 +186,7 @@ function Index() {
               <div className="w-[60%] h-auto space-y-1 text-center">
                 <p className="mt-10 mb-0 h1 md:mb-2 md:mt-0" >Pilih tanggal dan waktu</p>
                 <div className="flex flex-col md:flex-row">
-                  <Calendar onClickDay={(date) => setValue(formatDate(date))} value={value} locale='en' />
+                  <Calendar className={"bg-white dark:bg-dark dark:text-gray-300"} onClickDay={(date) => setValue(formatDate(date))} value={value} locale='en' minDate={new Date()} />
                   <div className="w-full md:w-[50%] min-h-full overflow-hidden md:ml-4">
                     <div className={`mt-4 md:m-0 overflow-hidden space-y-2`}>
                       {
