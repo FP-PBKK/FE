@@ -15,7 +15,7 @@ export const Header = () => {
     const user = useAuthStore.useUser();
     const logout = useAuthStore.useLogout();
     const handleHistory = () =>{
-        router.push('/payment/all')
+        router.push(`/payment/userpayment/${user?.id}`)
     }
     const handleLogout= ()=>{
         try {
@@ -27,7 +27,7 @@ export const Header = () => {
     }
 
     return (
-        <nav className='sticky top-0 bg-white dark:bg-dark shadow-sm z-20 flex flex-col justify-center md:justify-between px-8 overflow-x-hidden'>
+        <nav className='fixed w-full top-0 bg-white dark:bg-dark shadow-sm z-20 flex flex-col justify-center md:justify-between px-8 overflow-x-hidden'>
             <div className='flex'>
                 <Image
                     height="1080"
@@ -57,7 +57,6 @@ export const Header = () => {
                     {
                         user ? <><button onClick={handleHistory}><p className='h4'>{user.username}</p></button> <button onClick={handleLogout} className='h4'>Logout</button></> :  <><FaUserCircle size={20} /> <Links href='/auth'>Login</Links></>
                     }
-                   
                     </li>
                 </ul>
 
