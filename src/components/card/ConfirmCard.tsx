@@ -2,6 +2,7 @@ import { Transition, Dialog } from '@headlessui/react'
 import * as react from 'react'
 interface Card {
     isOpen: boolean,
+    isTransaction?:boolean | false,
     onclick: () => void,
     onCreateBooking : ()=>void
     data: {
@@ -12,6 +13,7 @@ interface Card {
 }
 const ConfirmCard: React.FC<Card> = ({
     isOpen,
+    isTransaction,
     onclick,
     onCreateBooking,
     data
@@ -48,17 +50,27 @@ const ConfirmCard: React.FC<Card> = ({
                                         as="h3"
                                         className="h2 font-bold leading-6 text-center text-gray-900 h3"
                                     >
-                                        Konfirmasi Pemsesanan
+                                        Konfirmasi {
+                                            isTransaction ? "Pembayaran" : "Pemesananan"
+                                        }
                                     </Dialog.Title>
                                     <div className="mt-4 flex space-x-2">
                                         <div className='p font-bold'>
-                                            <p>Tanggal </p>
-                                            <p>Jam </p>
+                                            {
+                                                data.date && <p>Tanggal </p>
+                                            }
+                                            {
+                                                data.time && <p>Jam </p>
+                                            }
                                             <p>Total Pembayaran </p>
                                         </div>
                                         <div className='p'>
-                                            <p>: {data?.date}</p>
-                                            <p>: {data?.time}</p>
+                                            {
+                                                data.date && <p>: {data?.date}</p>
+                                            }
+                                            {
+                                                data.time && <p>: {data?.time}</p>
+                                            }
                                             <p>: Rp{data?.total}</p>
                                         </div>
 

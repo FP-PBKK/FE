@@ -106,7 +106,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     const paths = response.data.data.map((data: any) => ({
         params: { userpayment: data?.id.toString() }
     }))
-    console.log(paths);
+    // console.log(paths);
     
     return {
         paths,
