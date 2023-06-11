@@ -69,10 +69,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async (context) => {
     const { payment }: any = context.params;
-    console.log(context?.params);
+    // console.log(context?.params);
 
     const res = await axios.get(`http://localhost:5000/api/transaction/id/${payment}`)
-    console.log(res.data.data.total == 0);
+    // console.log(res.data.data.total == 0);
     if (res.data.data.total == 0) {
         return {
             notFound: true,
