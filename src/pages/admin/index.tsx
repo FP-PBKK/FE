@@ -1,9 +1,7 @@
-import React from 'react'
-
+import React from 'react';
+import { Sidebar } from '@/components/Sidebar';
 const index = () => {
-  return (
-    <div>index</div>
-  )
-}
+  return <Sidebar />;
+};
 
-export default index
+export default index;
