@@ -2,23 +2,23 @@ import { Layout } from '@/components/Layout'
 import React from 'react'
 
 const index = () => {
-  const garis = "w-full border-b-2 border-dashed border-black"
+  const garis = "w-full border-b-2 border-dashed border-black dark:border-white"
   const card = "w-[30%] md:h-72 h-60 rounded-md text-center bg-abu flex flex-col justify-center space-y-2"
   return (
     <Layout>
-      <div className='min-h-screen justify-center items-center flex flex-col font-popin overflow-hidden text-black'>
+      <div className='min-h-screen justify-center items-center flex flex-col font-popin overflow-hidden'>
         {/* Pricelist Atas */}
         <div className='w-full p-4 md:p-0 md:w-[60%] mt-20'>
           <p className="text-center h1">Normal PriceList</p>
           <div><p className="h1">Self Photo Studio</p>
             <ul className='list-disc ml-6'>
-              <li><p className="p text-black">Unlimited Shoot</p></li>
-              <li><p className="p text-black">Max 6 orang</p></li>
-              <li><p className="p text-black">Free 10 SoftFiles</p></li>
+              <li><p className="p">Unlimited Shoot</p></li>
+              <li><p className="p">Max 6 orang</p></li>
+              <li><p className="p">Free 10 SoftFiles</p></li>
             </ul>
             <div className='flex flex-row h-4 justify-evenly relative overflow-hidden'>
-              <div className='w-[90%] -ml-8 border-b-2 border-dashed border-black'></div>
-              <div className='absolute -bottom-2 right-0'><p className="p text-black">20k</p></div>
+              <div className='w-[90%] -ml-8 border-b-2 border-dashed border-black dark:border-white'></div>
+              <div className='absolute -bottom-2 right-0'><p className="p">20k</p></div>
             </div>
 
           </div>
@@ -27,9 +27,9 @@ const index = () => {
             <div className='flex flex-row'>
               <div className='w-[40%]'>
                 <ul className='list-disc ml-6'>
-                  <li><p className="p text-black">Waktu Max 5 Menit/Sesi</p></li>
-                  <li><p className="p text-black">Tambahan 1 Orang</p></li>
-                  <li><p className="p text-black">Tambahan 1x Cetak</p></li>
+                  <li><p className="p">Waktu Max 5 Menit/Sesi</p></li>
+                  <li><p className="p">Tambahan 1 Orang</p></li>
+                  <li><p className="p">Tambahan 1x Cetak</p></li>
                 </ul>
               </div>
               <div className='w-[60%]'>
@@ -41,9 +41,9 @@ const index = () => {
               </div>
               <div>
                 <ul className='space-y-4 md:space-y-0'>
-                  <li><p className="p text-black">20k</p></li>
-                  <li><p className="p text-black">20k</p></li>
-                  <li><p className="p text-black">20k</p></li>
+                  <li><p className="p">20k</p></li>
+                  <li><p className="p">20k</p></li>
+                  <li><p className="p">20k</p></li>
                 </ul>
               </div>
             </div></div>
@@ -52,7 +52,7 @@ const index = () => {
             <div className='flex flex-row'>
               <div className='w-[40%]'>
                 <ul className='list-disc ml-6'>
-                  <li><p className="p text-black">Colored all soft file</p></li>
+                  <li><p className="p">Colored all soft file</p></li>
                 </ul>
               </div>
               <div className='w-[60%]'>
@@ -62,7 +62,7 @@ const index = () => {
               </div>
               <div>
                 <ul className=''>
-                  <li><p className="p text-black">20k</p></li>
+                  <li><p className="p">20k</p></li>
                 </ul>
               </div>
             </div>
@@ -79,24 +79,24 @@ const index = () => {
               <div>
                 <ul>
                   <li>
-                    <p className="p text-black">Unlimited Shoot</p>
+                    <p className="p">Unlimited Shoot</p>
                   </li>
                   <li>
-                    <p className="p text-black">Durasi 10 Menit</p>
+                    <p className="p">Durasi 10 Menit</p>
                   </li>
                   <li>
-                    <p className="p text-black">Maks 2 orang</p>
+                    <p className="p">Maks 2 orang</p>
                   </li>
                   <li>
-                    <p className="p text-black">Free Cetak 2x</p>
+                    <p className="p">Free Cetak 2x</p>
                   </li>
                   <li>
-                    <p className="p text-black">All softfile</p>
+                    <p className="p">All softfile</p>
                   </li>
                 </ul>
               </div>
               <div>
-                <p className="p text-black">55k</p>
+                <p className="p">55k</p>
               </div>
             </div>
 
