@@ -107,7 +107,7 @@ const Userpayment: NextPage<{ data: any }> = ({ data }) => {
                                                     Rp{data.total}
                                                 </td>
                                                 <td className="px-6 py-4 text-sm text-gray-800 whitespace-nowrap">
-                                                    {data.discountId}
+                                                    {data.discountId != 'no' ? "Diskon" : "Tidak diskon"  }
                                                 </td>
 
                                                 {

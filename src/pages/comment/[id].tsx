@@ -14,11 +14,11 @@ const index = () => {
     const [datab, setDatab] = react.useState('')
 
     async function getData(params:string) {
-        const response = await apiMock.get(`/booking/booking/user/${params}`)
-        console.log(response);
+        const response = await apiMock.get(`/booking/booking/id/${params}`)
+        console.log(response.data.data.idUser);
         
-        setIdu(response.data.data[0].idUser)
-        setDatab(response.data.data[0].id)
+        setIdu(response.data.data.idUser)
+        setDatab(response.data.data.id)
     }
     react.useEffect(() => {
         if(router.query.id){
@@ -32,26 +32,32 @@ const index = () => {
     const {
         register,
         handleSubmit,
-        formState: {
-            errors,
-        }
     } = useForm<FieldValues>({
         defaultValues: {
-            user_id: "",
-            booking_id: "",
-            comment: "sasaas",
+            comment: "",
             rate: '5'
         }
     });
     const onSubmit: SubmitHandler<FieldValues> = (data) => {
-        toast.promise(
-            apiMock.post(`/booking/feedback`, data)
-                .then((res) => {
+        const formSend = {
+            user_id : idu,
+            booking_id:datab,
+            comment : data.comment,
+            rate : data.rate
+        }
 
+        toast.promise(
+            apiMock.post(`/booking/feedback`, formSend)
+                .then((res) => {
+                    apiMock.put(`/booking/booking_status/${datab}`,{
+                        status:"finish"
+                    })
+                }).then(()=>{
+                    router.push('/feedback')
                 }),
             {
                 ...DEFAULT_TOAST_MESSAGE,
-                success: 'Account Successfully Created',
+                success: 'Komentar Berhasil Dibuat',
             }
         );
 
@@ -69,9 +75,6 @@ const index = () => {
                     className="space-y-6"
                     onSubmit={handleSubmit(onSubmit)}
                 >
-             
-                    <input value={idu} {...register("user_id")} className='hidden'></input>
-                    <input value={datab} {...register("booking_id")} className='hidden' ></input>
                     <p className='h2 text-center'>Feedback</p>
                     <div>
                     <label 
@@ -85,7 +88,7 @@ const index = () => {
                         > Komentar
         
                          </label>
-                    <textarea className='w-full border h-44'  {...register("comment", { required: true })}></textarea>
+                    <textarea className='w-full border h-44 p-1'  {...register("comment", { required: true })} placeholder='isikan komentar.....'></textarea>
                     </div>
                     <div>
                     <label 

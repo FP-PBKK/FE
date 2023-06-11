@@ -36,7 +36,7 @@ export const Header = () => {
                     src="/images/logo.jpg"
                     alt="Logo"
                 />
-                <h1 className='block text-xl font-extrabold md:hidden'>Silhouette</h1>
+                <h1 className='block text-xl font-extrabold md:hidden'>Pose Palace</h1>
                 <button className='block ml-auto md:hidden ' onClick={() => setOpen(!open)}>
                     {
                         open ? <FaRegTimesCircle className='' size={30} /> : <FaAlignJustify size={30} />
@@ -71,4 +71,5 @@ const links = [
     { href: '/about', label: 'About' },
     { href: '/pricelist', label: 'Pricelist' },
     { href: '/booking', label: 'Book Online' },
+    { href: '/feedback', label: 'Feedback' }
 ];
