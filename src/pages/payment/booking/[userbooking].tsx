@@ -143,10 +143,10 @@ const UserBooking: NextPage<{ data: any }> = ({ data }) => {
                                                 {data.discountId}
                                             </td>
                                             {
-                                                data.bookingStatus === 'finish' || data.lunas === 0 ? <td className="px-6 py-4 text-sm text-center bg-green-400 text-black whitespace-nowrap">
-                                                    {data.bookingStatus && "Lunas"}
+                                                data.bookingStatus !== 'paid' ? <td className="px-6 py-4 text-sm text-center text-black whitespace-nowrap">
+                                                    {data.bookingStatus}
                                                 </td> : <td className="px-6 py-4 text-sm text-center text-gray-800 whitespace-nowrap">
-                                                    {data.paid == 0 && "Belum"} <button onClick={()=>handlePay(data.idUser)} >|Bayar Sekarang</button>
+                                                    {data.bookingStatus && "paid"} <button onClick={()=>handlePay(data.id)} >|Berikan Feedback</button>
                                                 </td>
                                             }
 
