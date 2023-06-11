@@ -95,7 +95,7 @@ function Next() {
         }),
       {
         ...DEFAULT_TOAST_MESSAGE,
-        success: 'Transaksi Berhasil Dibuat',
+        success: 'Transaksi Berhasil Dibuatt',
       }
     );
   }
