@@ -1,5 +1,7 @@
 export type Transaction = {
-    id_booking?: string,
+    id : string,
+    bookingId?: string,
     total? : number,
-    discount_id?:string
+    discountId?:string,
+    paid: number
 }
