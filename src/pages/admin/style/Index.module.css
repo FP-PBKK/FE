@@ -1,0 +1,20 @@
+.page {
+  display: flex;
+}
+
+.pagination {
+  display: flex;
+  margin-left: 4px;
+}
+
+.pagination li {
+  color: black;
+  margin-left: 20px;
+  padding: 2px;
+  border-radius: 10px;
+}
+
+
+.active a {
+  text-decoration: underline;
+}
