@@ -21,7 +21,7 @@ const Userpayment: NextPage<{ data: any }> = ({ data }) => {
     }, [])
     const handlePay = async (data: string,id:string) => {
         try{
-            const response =  await apiMock.get(`/booking/booking/${data}`)
+            const response =  await apiMock.get(`/booking/booking/id/${data}`)
             const date = response.data.data.date
             const time = response.data.data.schedule.time
             checkIspaid(date,time,id)
@@ -53,38 +53,38 @@ const Userpayment: NextPage<{ data: any }> = ({ data }) => {
                     <h1 className='text-center font-bold text-xl'>Riwayat Transaksi</h1>
                     <div className="flex justify-center flex-col items-center">
                         <div className='flex justify-start text-left'>
-                            <p className='p text-left text-gray-900'><span className='p text-black font-semibold'>Note:</span>Jika ingin melakukan cancel dapat menghubungi nomor berikut : <a className='underline italic' href='https://wa.me/085758093907'>085758093907</a></p>
+                            <p className='p text-left text-gray-900'><span className='p font-semibold'>Note:</span>Jika ingin melakukan cancel dapat menghubungi nomor berikut : <a className='underline italic' href='https://wa.me/085758093907'>085758093907</a></p>
                         </div>
                         <table className="w-[80%] scale-50 md:scale-100 divide-y divide-gray-200 border rounded-lg">
                             <thead className="bg-gray-50">
                                 <tr>
                                     <th
                                         scope="col"
-                                        className="px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
+                                        className="px-6 py-3 text-xs font-bold text-left uppercase "
                                     >
                                         ID
                                     </th>
                                     <th
                                         scope="col"
-                                        className="px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
+                                        className="px-6 py-3 text-xs font-bold text-left uppercase "
                                     >
                                         Name
                                     </th>
                                     <th
                                         scope="col"
-                                        className="px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
+                                        className="px-6 py-3 text-xs font-bold text-left uppercase "
                                     >
                                         Harga
                                     </th>
                                     <th
                                         scope="col"
-                                        className="px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
+                                        className="px-6 py-3 text-xs font-bold text-left uppercase "
                                     >
                                         Diskon
                                     </th>
                                     <th
                                         scope="col"
-                                        className="px-6 py-3 text-xs font-bold text-center text-gray-500 uppercase "
+                                        className="px-6 py-3 text-xs font-bold text-center uppercase "
                                     >
                                         Status
                                     </th>
@@ -93,27 +93,27 @@ const Userpayment: NextPage<{ data: any }> = ({ data }) => {
                             </thead>
                             <tbody className="divide-y divide-gray-200">
                                 {
-                                    data.map((data: any, index: any) => {
+                                    data?.map((data: any, index: any) => {
 
                                         return (
                                             <tr key={data.id}>
-                                                <td className="px-6 py-4 text-sm font-medium text-gray-800 whitespace-nowrap">
+                                                <td className="px-6 py-4 text-sm font-medium whitespace-nowrap">
                                                     {index + 1}
                                                 </td>
-                                                <td className="px-6 py-4 text-sm text-gray-800 whitespace-nowrap">
+                                                <td className="px-6 py-4 text-sm whitespace-nowrap">
                                                     {data.id}
                                                 </td>
-                                                <td className="px-6 py-4 text-sm text-gray-800 whitespace-nowrap">
+                                                <td className="px-6 py-4 text-sm whitespace-nowrap">
                                                     Rp{data.total}
                                                 </td>
-                                                <td className="px-6 py-4 text-sm text-gray-800 whitespace-nowrap">
+                                                <td className="px-6 py-4 text-sm whitespace-nowrap">
                                                     {data.discountId != 'no' ? "Diskon" : "Tidak diskon"  }
                                                 </td>
 
                                                 {
-                                                    data.paid === 1 || data.lunas === 0 ? <td className="px-6 py-4 text-sm text-center bg-green-400 text-black whitespace-nowrap">
+                                                    data.paid === 1 || data.lunas === 0 ? <td className="px-6 py-4 text-sm text-center bg-green-400 whitespace-nowrap">
                                                         {data.paid && "Lunas"}
-                                                    </td> : <td className="px-6 py-4 text-sm text-center text-gray-800 whitespace-nowrap">
+                                                    </td> : <td className="px-6 py-4 text-sm text-center whitespace-nowrap">
                                                         {data.paid == 0 && "Belum"} <button onClick={() => handlePay(data.bookingId,data.id)} >|Bayar Sekarang</button>
                                                     </td>
                                                 }

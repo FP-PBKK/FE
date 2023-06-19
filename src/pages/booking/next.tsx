@@ -5,7 +5,7 @@ import { DEFAULT_TOAST_MESSAGE } from '@/constant/toast'
 import apiMock from '@/lib/axios-mock'
 import useAuthStore from '@/store/useAuthStore'
 import useBookStore from '@/store/useBookStore'
-import { Transaction } from '@/types/transaction'
+import { SendTransaction, Transaction } from '@/types/transaction'
 import { useRouter } from 'next/router'
 import * as react from 'react'
 import { toast } from 'react-hot-toast'
@@ -22,7 +22,7 @@ function Next() {
   const [totalWithDiscount,setTotalWithDiscount] = react.useState(0)
   const [total,setTotal] = react.useState(0)
   const [isOpen, setIsOpen] = react.useState(false)
-  const [data,setData] = react.useState<Transaction>()
+  const [data,setData] = react.useState<SendTransaction>()
   const Router = useRouter()
   const handleBack = () => {
     Router.push('/booking')
@@ -63,7 +63,7 @@ function Next() {
       }
     }
     e.preventDefault()
-    let data : Transaction ={
+    let data : SendTransaction ={
       id_booking : bookData?.bookingId,
       total : final,
       discount_id :discount

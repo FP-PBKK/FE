@@ -7,6 +7,8 @@ import * as react from 'react';
 import ReactPaginate from 'react-paginate';
 import styles from './style/Index.module.css'
 import clsx from 'clsx';
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
 
 const index = () => {
   const router = useRouter()
@@ -19,6 +21,7 @@ const index = () => {
   const [msg, setMsg] = react.useState("");
   const [query, setQuery] = react.useState('')
   const [isOpen, setIsOpen] = react.useState(false)
+  const [userDel,setUserdel] = react.useState('')
   const getUser = async () => {
     try {
       const response = await apiMock.get('/user')
@@ -41,7 +44,18 @@ const index = () => {
   }
   function deleteUser(id: string) {
     setIsOpen(true)
-    // setUserdel(userId)
+    setUserdel(id)
+  }
+  async function deleteUserbyid(e:any){
+    try{
+      const response = await apiMock.delete(`/user/delete/${userDel}`)
+      if(response.data.data){
+        toast.success("Berhasil dihapus")
+        setIsOpen(false)
+      }
+    }catch(err){
+      toast.error("Terjadi Kesalahan")
+    }
   }
   const changePage = ({ selected }: any) => {
     setPage(selected);
@@ -99,7 +113,7 @@ const index = () => {
                       <button
                         type="button"
                         className="inline-flex justify-center rounded-md border border-transparent bg-red-200 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-red-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                        onClick={handlerOnclick}
+                        onClick={e=> deleteUserbyid(e)}
                       >
                         Iya
                       </button>
@@ -190,7 +204,7 @@ const index = () => {
                             {index + 1}
                           </td>
                           <td className="px-4 py-2 text-sm text-gray-800 whitespace-nowrap">
-                            {data.name}
+                            {data.username}
                           </td>
                           <td className="px-4 py-2 text-sm text-gray-800 whitespace-nowrap">
                             {data.email}

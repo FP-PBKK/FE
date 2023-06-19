@@ -33,8 +33,8 @@ const Payment: NextPage<{ url: Transaction }> = ({ url }) => {
     return (
         <Layout>
             <div className='flex flex-col justify-center items-center min-h-main'>
-                <p>{url.id}</p>
-                <p>{url.qrId}</p>
+                <p>{url?.id}</p>
+                <p>{url?.qrId}</p>
                 {
                     qrString ? <Image
                         text={qrString}

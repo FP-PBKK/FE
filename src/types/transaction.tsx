@@ -5,3 +5,9 @@ export type Transaction = {
     discountId?:string,
     paid: number
 }
+
+export type SendTransaction = {
+    id_booking?: string,
+    total? : number,
+    discount_id?:string,
+}

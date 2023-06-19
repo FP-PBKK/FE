@@ -11,6 +11,7 @@ const index = () => {
   const [isOpen, setIsOpen] = react.useState(false)
   const [isOpen2, setIsOpen2] = react.useState(false)
   const [temp, setTemp] = react.useState("")
+  const [idDel,setIddel] = react.useState('')
   const getSchedule = async () => {
     try {
       const response = await apiMock.get('/booking/schedules')
@@ -36,19 +37,21 @@ const index = () => {
     setIsOpen2(true)
   }
 
-  const confirmDelete = async () => {
-    await apiMock.delete(`${process.env.REACT_APP_URL}/jadwal/`)
+  const confirmDelete = async (id:string) => {
+    await apiMock.delete(`/booking/schedule/${id}`)
     closeModal()
+    toast.success("Berhasil Dihapus")
     getSchedule()
 }
 const addTime = async () => {
-    await apiMock.post(`${process.env.REACT_APP_URL}/createjadwal/`, {
-        jam: "sa"
+    await apiMock.post(`/booking/schedule`, {
+        time: temp
     })
     closeModal2()
     getSchedule()
 }
 const deleteJadwal = (id:string) => {
+  setIddel(id)
   openModal()
 }
 
@@ -98,7 +101,7 @@ const deleteJadwal = (id:string) => {
                     </div>
 
                     <div className="mt-4 flex space-x-4">
-                      <button onClick={confirmDelete}
+                      <button onClick={e =>confirmDelete(idDel)}
                         type="button"
                         className="inline-flex justify-center rounded-md border border-transparent bg-red-200 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-red-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
 

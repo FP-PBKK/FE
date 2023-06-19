@@ -10,23 +10,23 @@ const user : NextPage<{user:User}> = ({user}) => {
   const router = useRouter()
   const [name, setName] = react.useState("");
   const [email, setEmail] = react.useState("");
-  const [password, setPassword] = react.useState("");
   const [role, setRole] = react.useState("");
 
   const updateUser = async (e : any ,id : string) => {
     e.preventDefault();
     try {
-        await axios.patch(`${process.env.REACT_APP_URL}/users/${id}`, {
+        await axios.put(`http://localhost:5000/api/user/update/${id}`, {
             name: name,
             email: email,
-            password: password,
             role: role,
         });
     router.push('/admin')
     } catch (error) {
         toast.error('Terjadi Kesalahan')
     }
+    
 };
+
   return (
     <AdminLayout>
       <div className='text-black w-1/2 border rounded-md shadow-md m-auto mt-20 p-2'>
@@ -39,7 +39,7 @@ const user : NextPage<{user:User}> = ({user}) => {
                         <input
                             type="text"
                             className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            value={user.name}
+                            defaultValue={user?.username}
                             onChange={(e) => setName(e.target.value)}
                             placeholder="Name"
                         />
@@ -52,7 +52,7 @@ const user : NextPage<{user:User}> = ({user}) => {
                         <input
                             type="text"
                             className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            value={user.email}
+                            defaultValue={user?.email}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="Email"
                         />
@@ -60,23 +60,11 @@ const user : NextPage<{user:User}> = ({user}) => {
                     </div>
 
                     <div className="">
-                        <label className="block text-sm font-medium text-gray-700">Password</label>
-
-                        <input
-                            type="password"
-                            className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            value={user.email}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="******"
-                        />
-
-                    </div>
-                    <div className="">
                         <label className="block text-sm font-medium text-gray-700">Role</label>
 
                         <select
                             className='mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
-                            value={user.role}
+                            defaultValue={user?.role}
                             onChange={(e) => setRole(e.target.value)}
                         >
                             <option value="admin">Admin</option>
