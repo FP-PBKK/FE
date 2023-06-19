@@ -3,15 +3,22 @@ import { Transaction } from '@/types/transaction'
 import axios from 'axios'
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next'
 import * as react from 'react'
+import { toast } from 'react-hot-toast'
 
 const order: NextPage<{ transaction: Transaction }> = ({ transaction }) => {
   const [lunas, setLunas] = react.useState("")
   const updateTrans = async (e: any, id: string) => {
     e.preventDefault();
+    console.log(lunas);
+    
     try {
-      await axios.patch(`${process.env.REACT_APP_URL}/transaction/${id}`, {
-        lunas: lunas
+      const res = await axios.put(`http://localhost:5000/api/transaction/${id}`, {
+        paid: lunas
       });
+      console.log(res.data);
+      
+      toast.success("sukses")
+
       // navigate("/listorder");
     } catch (error) {
       console.log(error);
@@ -30,10 +37,10 @@ const order: NextPage<{ transaction: Transaction }> = ({ transaction }) => {
               <div className="col-span-6 sm:col-span-3">
                 <label className="block text-sm font-medium text-gray-700">Status</label>
                 <select className='class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"'
-                  value={transaction?.id ? "Lunas" : "Belum lunas"}
+                  defaultValue={transaction?.id ? "1" : "0"}
                   onChange={(e) => setLunas(e.target.value)}
                 >
-                  <option value="0">cancel</option>
+                  <option value="0">Belum Lunas</option>
                   <option value="1">lunas</option>
                 </select>
               </div>

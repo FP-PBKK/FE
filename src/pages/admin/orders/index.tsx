@@ -39,10 +39,6 @@ const index = () => {
   function handlerEditTransaction(id: string) {
     router.push(`/admin/orders/${id}`)
   }
-  function deleteUser(id: string) {
-    setIsOpen(true)
-    // setUserdel(userId)
-  }
   const changePage = ({ selected }: any) => {
     setPage(selected);
     if (selected === 9) {
@@ -165,19 +161,19 @@ const index = () => {
                         scope="col"
                         className="px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
                       >
-                        Role
+                        Diskon
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
+                      >
+                        Status
                       </th>
                       <th
                         scope="col"
                         className="px-6 py-3 text-xs font-bold text-right text-gray-500 uppercase "
                       >
                         Edit
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-6 py-3 text-xs font-bold text-right text-gray-500 uppercase "
-                      >
-                        Delete
                       </th>
                     </tr>
                   </thead>
@@ -197,6 +193,9 @@ const index = () => {
                           <td className="px-4 py-2 text-sm text-gray-800 whitespace-nowrap">
                             {data.discountId}
                           </td>
+                          <td className="px-4 py-2 text-sm text-gray-800 whitespace-nowrap">
+                            {data.paid == 1 ? 'Lunas' : "Belum Lunas"  }
+                          </td>
                           <td className="px-4 py-2 text-sm font-medium text-right whitespace-nowrap">
                             <button onClick={() => handlerEditTransaction(data.id)}
                               className="text-green-500 hover:text-green-700"
@@ -204,13 +203,7 @@ const index = () => {
                               Edit
                             </button>
                           </td>
-                          <td className="px-4 py-2 text-sm font-medium text-right whitespace-nowrap">
-                            <button onClick={() => deleteUser(data.id)}
-                              className="text-red-500 hover:text-red-700"
-                            >
-                              Delete
-                            </button>
-                          </td>
+                          
                         </tr>
                       ))
                     }
