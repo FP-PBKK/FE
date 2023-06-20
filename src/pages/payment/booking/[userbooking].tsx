@@ -74,6 +74,8 @@ const UserBooking: NextPage<{ data: any }> = ({ data }) => {
     function handleRouteBook() {
         router.push(`/payment/userpayment/${userData?.id}`)
     }
+    console.log(data);
+    
     return (
         <Layout>
 
