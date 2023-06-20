@@ -163,8 +163,8 @@ const UserBooking: NextPage<{ data: any }> = ({ data }) => {
     )
 }
 export const getStaticPaths: GetStaticPaths = async () => {
-    const response = await axios.get('http://localhost:5000/api/user')
-    const filter = response.data.data.filter((data:any)=>{
+    const response = await axios.get('http://localhost:5000/api/user?page=0&limit=10')
+    const filter = response.data.data.data.filter((data:any)=>{
         return data.role == 'user'
     })
     const paths = filter.map((data: any) => ({
