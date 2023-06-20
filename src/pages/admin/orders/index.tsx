@@ -7,6 +7,7 @@ import { Transaction } from '@/types/transaction'
 import apiMock from '@/lib/axios-mock'
 import clsx from 'clsx'
 import ReactPaginate from 'react-paginate';
+import { toast } from 'react-hot-toast'
 const index = () => {
   const router = useRouter()
   const [isOpen, setIsOpen] = react.useState(false)
@@ -17,28 +18,35 @@ const index = () => {
   const [keyword, setKeyword] = react.useState("");
   const [msg, setMsg] = react.useState("");
   const [query, setQuery] = react.useState('')
-  const [transaction,setTransaction] = react.useState<Transaction[]>([])
+  const [transaction, setTransaction] = react.useState<Transaction[]>([])
 
   const getTransaction = async () => {
     try {
-      const response = await apiMock.get('/transaction')
-      setTransaction(response.data.data)
-      console.log(response.data.data);
-
+      const response = await apiMock.get(`/transaction?page=${page}&size=10`)
+      setTransaction(response.data.data.data)
+      setPages(response.data.data.currentPage);
+      setPages(response.data.data.totalPages);
+      setRows(response.data.data.totalItems);
     } catch (err) {
-
+      toast.error("terjadi kesalahan")
     }
   }
 
   react.useEffect(() => {
     getTransaction()
-  }, [])
+  }, [page,keyword])
   function handlerOnclick() {
     setIsOpen(!isOpen)
   }
   function handlerEditTransaction(id: string) {
     router.push(`/admin/orders/${id}`)
   }
+  const searchData = (e:any) => {
+    e.preventDefault();
+    setPage(0);
+    setMsg("");
+    setKeyword(query);
+  };
   const changePage = ({ selected }: any) => {
     setPage(selected);
     if (selected === 9) {
@@ -48,7 +56,7 @@ const index = () => {
     } else {
       setMsg("");
     }
-  };  
+  };
   return (
     <AdminLayout>
       <div className="mt-20 min-h-screen">
@@ -112,11 +120,12 @@ const index = () => {
             </div>
           </Dialog>
         </Transition>
+
         <div className="flex flex-col">
           <div className="overflow-x-auto w-full">
             <div className="py-3 pl-2">
               <div className="relative max-w-xs">
-                <form>
+                <form onSubmit={searchData}>
                   <label htmlFor="hs-table-search" className="sr-only">
                     Search
                   </label>
@@ -194,7 +203,7 @@ const index = () => {
                             {data.discountId}
                           </td>
                           <td className="px-4 py-2 text-sm text-gray-800 whitespace-nowrap">
-                            {data.paid == 1 ? 'Lunas' : "Belum Lunas"  }
+                            {data.paid == 1 ? 'Lunas' : "Belum Lunas"}
                           </td>
                           <td className="px-4 py-2 text-sm font-medium text-right whitespace-nowrap">
                             <button onClick={() => handlerEditTransaction(data.id)}
@@ -203,7 +212,7 @@ const index = () => {
                               Edit
                             </button>
                           </td>
-                          
+
                         </tr>
                       ))
                     }

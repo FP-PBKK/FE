@@ -1,6 +1,5 @@
 import { AdminLayout } from '@/components/AdminLayout';
 import apiMock from '@/lib/axios-mock';
-import { User } from '@/types/auth';
 import { Dialog, Transition } from '@headlessui/react';
 import { useRouter } from 'next/router';
 import * as react from 'react';
@@ -22,20 +21,29 @@ const index = () => {
   const [query, setQuery] = react.useState('')
   const [isOpen, setIsOpen] = react.useState(false)
   const [userDel,setUserdel] = react.useState('')
+
+  type User = {
+    id :string,
+    name:string
+    email: string;
+    role : string
+    token: string;
+  };
   const getUser = async () => {
     try {
       const response = await apiMock.get('/user')
-      setUsers(response.data.data)
-      console.log(response.data.data);
-
+      setUsers(response.data.data.data)
+      setPages(response.data.data.currentPage);
+      setPages(response.data.data.totalPages);
+      setRows(response.data.data.totalItems);
     } catch (err) {
-
+      toast.error("Terjadi Kesalahan")
     }
   }
 
   react.useEffect(() => {
     getUser()
-  }, [])
+  }, [page,keyword])
   function handlerOnclick() {
     setIsOpen(!isOpen)
   }
@@ -67,7 +75,7 @@ const index = () => {
       setMsg("");
     }
   };
-
+  
   return (
     <AdminLayout>
       <div className="mt-20 min-h-screen">
@@ -204,7 +212,7 @@ const index = () => {
                             {index + 1}
                           </td>
                           <td className="px-4 py-2 text-sm text-gray-800 whitespace-nowrap">
-                            {data.username}
+                            {data.name}
                           </td>
                           <td className="px-4 py-2 text-sm text-gray-800 whitespace-nowrap">
                             {data.email}

@@ -132,8 +132,8 @@ const Userpayment: NextPage<{ data: any }> = ({ data }) => {
     )
 }
 export const getStaticPaths: GetStaticPaths = async () => {
-    const response = await axios.get('http://localhost:5000/api/user')
-    const paths = response.data.data.map((data: any) => ({
+    const response = await axios.get('http://localhost:5000/api/user?page=0&limit=10')
+    const paths = response.data.data.data.map((data: any) => ({
         params: { userpayment: data?.id.toString() }
     }))
     // console.log(paths);

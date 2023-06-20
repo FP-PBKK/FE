@@ -57,8 +57,8 @@ const Payment: NextPage<{ url: Transaction }> = ({ url }) => {
 
 
 export const getStaticPaths: GetStaticPaths = async () => {
-    const response = await axios.get('http://localhost:5000/api/transaction')
-    const paths = response.data.data.map((data: any) => ({
+    const response = await axios.get('http://localhost:5000/api/transaction?page=0&limit=10')
+    const paths = response.data.data.data.map((data: any) => ({
         params: { payment: data?.id.toString() }
     }))
     return {
