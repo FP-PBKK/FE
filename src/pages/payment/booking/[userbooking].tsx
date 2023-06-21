@@ -74,7 +74,6 @@ const UserBooking: NextPage<{ data: any }> = ({ data }) => {
     function handleRouteBook() {
         router.push(`/payment/userpayment/${userData?.id}`)
     }
-    console.log(data);
     
     return (
         <Layout>
@@ -115,7 +114,7 @@ const UserBooking: NextPage<{ data: any }> = ({ data }) => {
                                         scope="col"
                                         className="px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
                                     >
-                                        Diskon
+                                        Jam
                                     </th>
                                     <th
                                         scope="col"
@@ -142,7 +141,7 @@ const UserBooking: NextPage<{ data: any }> = ({ data }) => {
                                                     Rp{data.date}
                                                 </td>
                                                 <td className="px-6 py-4 text-sm  whitespace-nowrap">
-                                                    {data.discountId}
+                                                    {data.schedule.time}
                                                 </td>
                                                 {
                                                     data.bookingStatus !== 'paid' ? <td className="px-6 py-4 text-sm text-center whitespace-nowrap">
