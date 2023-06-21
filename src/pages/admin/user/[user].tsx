@@ -39,7 +39,7 @@ const user : NextPage<{user:User}> = ({user}) => {
                         <input
                             type="text"
                             className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            defaultValue={user?.username}
+                            defaultValue={user?.name}
                             onChange={(e) => setName(e.target.value)}
                             placeholder="Name"
                         />
@@ -86,7 +86,7 @@ const user : NextPage<{user:User}> = ({user}) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const response = await axios.get('http://localhost:5000/api/user')
-  const paths = response.data.data.map((data: any) => ({
+  const paths = response.data.data.data.map((data: any) => ({
       params: { user: data?.id.toString() }
   }))
   return {

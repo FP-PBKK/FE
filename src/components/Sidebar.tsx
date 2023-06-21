@@ -1,4 +1,4 @@
-import { FaUser, FaShoppingCart, FaSignOutAlt, FaCalendarAlt } from 'react-icons/fa'
+import { FaUser, FaShoppingCart, FaSignOutAlt, FaCalendarAlt,FaMoneyBill } from 'react-icons/fa'
 import Links from './buttons/Links';
 import useAuthStore from '@/store/useAuthStore';
 import { toast } from 'react-hot-toast';
@@ -65,6 +65,7 @@ const links = [
     { href: '/admin', label: 'Users',icon : "user" },
     { href: '/admin/orders', label: 'Orders', icon : "order" },
     { href: '/admin/time', label: 'Time',icon : "time" },
+    { href: '/admin/diskon', label: 'Diskon',icon : "diskon" }
 ];
 const icons = {
     user:{
@@ -75,5 +76,8 @@ const icons = {
     },
     time:{
         icon:FaCalendarAlt
+    },
+    diskon:{
+        icon:FaMoneyBill
     },
 }
